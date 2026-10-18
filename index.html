@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elementra - Periodic Table & Chemistry Learning Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        alkali: '#ef4444',
+                        alkaline: '#f97316',
+                        transition: '#eab308',
+                        post: '#10b981',
+                        metalloid: '#06b6d4',
+                        nonmetal: '#3b82f6',
+                        halogen: '#8b5cf6',
+                        noble: '#ec4899',
+                        lanthanide: '#a855f7',
+                        actinide: '#d946ef'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Group & Period Sprint - Horizontal Single-Line Options Container */
+        .horizontal-options-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 12px;
+            width: 100%;
+            justify-content: space-between;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .horizontal-option-btn {
+            flex: 1 1 0%;
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 18px 10px;
+            border-radius: 12px;
+            background-color: rgba(15, 23, 42, 0.95);
+            border: 1px solid #334155;
+            color: #f1f5f9;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+        }
+
+        .horizontal-option-btn:hover {
+            border-color: #22d3ee;
+            background-color: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 0 16px rgba(34, 211, 238, 0.35);
+        }
+
+        .horizontal-option-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Pulse glow effect */
+        @keyframes cyanGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(6, 182, 212, 0.6); }
+        }
+        .glow-cyan {
+            animation: cyanGlow 3s infinite;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col font-sans select-none overflow-x-hidden">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="showScreen('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white font-orbitron font-black text-xl shadow-lg shadow-cyan-500/20">
+                    E
+                </div>
+                <div>
+                    <h1 class="font-orbitron font-black text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">
+                        ELEMENTRA
+                    </h1>
+                    <p class="text-[10px] text-slate-400 tracking-widest font-semibold uppercase">Periodic Chemistry Master</p>
+                </div>
+            </div>
+
+            <nav class="flex items-center gap-2">
+                <button onclick="showScreen('home')" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad text-cyan-400"></i>
+                    <span class="hidden sm:inline">Play Modes</span>
+                </button>
+                <button onclick="showScreen('table')" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+                    <i class="fa-solid fa-table-cells text-cyan-400"></i>
+                    <span class="hidden sm:inline">Periodic Table</span>
+                </button>
+                <button onclick="toggleAudio()" id="audio-toggle-btn" class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col relative">
+
+        <!-- TOAST NOTIFICATION -->
+        <div id="toast" class="fixed top-20 right-5 z-50 transform translate-x-72 transition-transform duration-300 ease-out px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border text-sm font-bold pointer-events-none opacity-0">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-lg"></i>
+            <span id="toast-msg">Correct!</span>
+        </div>
+
+        <!-- SCREEN 1: MAIN MENU / PLAY MODES -->
+        <section id="screen-home" class="flex-1 flex flex-col justify-center items-center py-6">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="px-3 py-1 rounded-full bg-cyan-950 border border-cyan-800 text-cyan-400 text-xs font-bold font-orbitron tracking-widest uppercase mb-4 inline-block">
+                    Full 118-Element Interactive Chemistry Platform
+                </span>
+                <h2 class="text-4xl sm:text-5xl font-black font-orbitron tracking-tight text-slate-100 mb-4">
+                    Master Periodic <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Trends & Structure</span>
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    Test your speed across all 118 elements, 7 Periods, and 18 Groups. Analyze electron shells, periodic coordinates, and reactivity gradients!
+                </p>
+            </div>
+
+            <!-- MODE CARDS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
+                
+                <!-- MODE 1: GROUP & PERIOD SPRINT -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-xl glow-cyan group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-950 border border-cyan-800 text-cyan-400 flex items-center justify-center text-xl mb-4 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-colors">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-slate-100 mb-2">Group & Period Sprint</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            50 non-repeating elements randomly sampled from all 118 elements. Select the correct Period and Group in a single horizontal line!
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-cyan-400"></i> 2:00 Time</span>
+                            <span>•</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-cyan-400"></i> 50 Items</span>
+                        </div>
+                        <button onclick="startGame('sprint')" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm tracking-wide transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                            <span>Start Sprint</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODE 2: REACTIVITY SPEED RUN -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-xl group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-950 border border-amber-800 text-amber-400 flex items-center justify-center text-xl mb-4 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
+                            <i class="fa-solid fa-flask-vial"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-slate-100 mb-2">Reactivity & Structure</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            Questions covering valence electron rules, alkali metal behavior, halogen reactivity gradients, and octet stability.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-400"></i> 2:00 Time</span>
+                            <span>•</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-amber-400"></i> 50 Items</span>
+                        </div>
+                        <button onclick="startGame('reactivity')" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-sm tracking-wide transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                            <span>Start Reactivity</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODE 3: IDENTIFICATION BLITZ -->
+                <div class="bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-xl group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-950 border border-purple-800 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:bg-purple-500 group-hover:text-slate-950 transition-colors">
+                            <i class="fa-solid fa-atom"></i>
+                        </div>
+                        <h3 class="font-orbitron font-bold text-lg text-slate-100 mb-2">Element Blitz</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            Identify element names given their chemical symbols, atomic numbers, and shell structures across all 118 elements.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-purple-400"></i> 2:00 Time</span>
+                            <span>•</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-purple-400"></i> 50 Items</span>
+                        </div>
+                        <button onclick="startGame('blitz')" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-400 hover:to-pink-500 text-slate-950 font-bold text-sm tracking-wide transition shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2">
+                            <span>Start Blitz</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SCREEN 2: GAME ARENA -->
+        <section id="screen-game" class="hidden flex-1 flex flex-col justify-between max-w-4xl mx-auto w-full py-4">
+            
+            <!-- GAME HEADER STATUS BAR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-6 shadow-xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <button onclick="confirmExitGame()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-100 transition">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                    <div>
+                        <h3 id="game-title" class="font-orbitron font-bold text-sm text-cyan-400 uppercase tracking-wider">Group & Period Sprint</h3>
+                        <p class="text-[11px] text-slate-400">Item <span id="current-item-num" class="text-slate-100 font-bold">1</span> of 50</p>
+                    </div>
+                </div>
+
+                <!-- TIMER & SCORE -->
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Time Remaining</div>
+                        <div id="game-timer" class="font-orbitron font-black text-xl text-amber-400">02:00</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Score</div>
+                        <div id="game-score" class="font-orbitron font-black text-xl text-cyan-400">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden mb-6 border border-slate-800">
+                <div id="game-progress-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- QUESTION ARENA -->
+            <div id="question-arena" class="flex-1 flex flex-col items-center justify-center my-auto">
+                <!-- Content injected dynamically -->
+            </div>
+
+        </section>
+
+        <!-- SCREEN 3: RESULTS DASHBOARD -->
+        <section id="screen-results" class="hidden flex-1 flex flex-col max-w-4xl mx-auto w-full py-6">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 rounded-2xl bg-cyan-950 border border-cyan-800 text-cyan-400 flex items-center justify-center text-3xl mx-auto mb-3 shadow-xl">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-3xl font-black font-orbitron text-slate-100">Round Completed!</h2>
+                <p class="text-slate-400 text-xs mt-1">Here is your performance analytics and chemistry accuracy breakdown.</p>
+            </div>
+
+            <!-- STATS SUMMARY CARDS -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
+                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Correctness</div>
+                    <div id="res-correctness" class="font-orbitron font-black text-2xl text-cyan-400">0 / 50</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Total Score</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
+                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Accuracy</div>
+                    <div id="res-accuracy" class="font-orbitron font-black text-2xl text-emerald-400">0%</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Success Rate</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
+                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Time Used</div>
+                    <div id="res-time-used" class="font-orbitron font-black text-2xl text-amber-400">0m 00s</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Limit: 2m 00s</div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
+                    <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Finished Items</div>
+                    <div id="res-finished" class="font-orbitron font-black text-2xl text-purple-400">0 / 50</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Completed</div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <button onclick="restartCurrentGame()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm tracking-wide transition shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Play Again</span>
+                </button>
+                <button onclick="showScreen('home')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm tracking-wide transition flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Main Menu</span>
+                </button>
+            </div>
+
+            <!-- REVIEW BREAKDOWN TABLE -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex-1 flex flex-col">
+                <h3 class="font-orbitron font-bold text-sm text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-cyan-400"></i>
+                    <span>Question Breakdown Review</span>
+                </h3>
+
+                <div class="overflow-y-auto max-h-96 pr-2">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 uppercase font-semibold">
+                                <th class="p-2 w-12">#</th>
+                                <th class="p-2">Question</th>
+                                <th class="p-2">Your Answer</th>
+                                <th class="p-2">Correct Answer</th>
+                                <th class="p-2">Chemistry Context</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review-table-body" class="divide-y divide-slate-800/50">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: INTERACTIVE PERIODIC TABLE & BOHR VISUALIZER -->
+        <section id="screen-table" class="hidden flex-1 flex flex-col py-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-black font-orbitron text-slate-100">Interactive Periodic Table (118 Elements)</h2>
+                    <p class="text-slate-400 text-xs">Explore elements across 7 Periods and 18 Groups. Click any element to view its atomic structure & Bohr model!</p>
+                </div>
+
+                <!-- CATEGORY LEGEND -->
+                <div class="flex flex-wrap gap-1.5 text-[10px]">
+                    <span class="px-2 py-1 rounded bg-alkali/20 border border-alkali/50 text-alkali font-semibold">Alkali</span>
+                    <span class="px-2 py-1 rounded bg-alkaline/20 border border-alkaline/50 text-alkaline font-semibold">Alkaline</span>
+                    <span class="px-2 py-1 rounded bg-transition/20 border border-transition/50 text-transition font-semibold">Transition</span>
+                    <span class="px-2 py-1 rounded bg-post/20 border border-post/50 text-post font-semibold">Post-Trans</span>
+                    <span class="px-2 py-1 rounded bg-metalloid/20 border border-metalloid/50 text-metalloid font-semibold">Metalloid</span>
+                    <span class="px-2 py-1 rounded bg-nonmetal/20 border border-nonmetal/50 text-nonmetal font-semibold">Nonmetal</span>
+                    <span class="px-2 py-1 rounded bg-halogen/20 border border-halogen/50 text-halogen font-semibold">Halogen</span>
+                    <span class="px-2 py-1 rounded bg-noble/20 border border-noble/50 text-noble font-semibold">Noble Gas</span>
+                    <span class="px-2 py-1 rounded bg-lanthanide/20 border border-lanthanide/50 text-lanthanide font-semibold">Lanthanide</span>
+                    <span class="px-2 py-1 rounded bg-actinide/20 border border-actinide/50 text-actinide font-semibold">Actinide</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+                <!-- GRID DISPLAY CONTAINER -->
+                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl overflow-x-auto flex flex-col justify-between">
+                    <div id="periodic-grid" class="grid grid-cols-18 gap-1 min-w-[700px]">
+                        <!-- Dynamic cells populated via JS -->
+                    </div>
+                </div>
+
+                <!-- BOHR VISUALIZER SIDEBAR -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col items-center justify-between">
+                    <div class="text-center w-full">
+                        <span id="bohr-symbol" class="text-3xl font-black font-orbitron text-cyan-400">Na</span>
+                        <h3 id="bohr-name" class="text-lg font-bold text-slate-100">Sodium</h3>
+                        <p id="bohr-category" class="text-xs text-alkali font-semibold uppercase">Alkali Metal</p>
+                    </div>
+
+                    <!-- CANVAS FOR BOHR MODEL -->
+                    <div class="relative w-64 h-64 my-4 flex items-center justify-center">
+                        <canvas id="bohr-canvas" width="256" height="256" class="w-full h-full"></canvas>
+                    </div>
+
+                    <!-- ATOMIC METRICS -->
+                    <div class="grid grid-cols-2 gap-2 w-full text-center text-xs">
+                        <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 text-[10px] block uppercase">Atomic #</span>
+                            <span id="bohr-num" class="font-orbitron font-bold text-slate-200">11</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 text-[10px] block uppercase">Period</span>
+                            <span id="bohr-period" class="font-orbitron font-bold text-slate-200">3 (3 Shells)</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 text-[10px] block uppercase">Group</span>
+                            <span id="bohr-group" class="font-orbitron font-bold text-slate-200">1</span>
+                        </div>
+                        <div class="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                            <span class="text-slate-500 text-[10px] block uppercase">Valence Electrons</span>
+                            <span id="bohr-valence" class="font-orbitron font-bold text-cyan-400">1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ================= DATABASE OF ALL 118 ELEMENTS ================= */
+        const ELEMENTS = [
+            { num: 1, sym: "H", name: "Hydrogen", period: 1, group: 1, cat: "nonmetal", shells: [1], valence: 1 },
+            { num: 2, sym: "He", name: "Helium", period: 1, group: 18, cat: "noble", shells: [2], valence: 2 },
+            { num: 3, sym: "Li", name: "Lithium", period: 2, group: 1, cat: "alkali", shells: [2, 1], valence: 1 },
+            { num: 4, sym: "Be", name: "Beryllium", period: 2, group: 2, cat: "alkaline", shells: [2, 2], valence: 2 },
+            { num: 5, sym: "B", name: "Boron", period: 2, group: 13, cat: "metalloid", shells: [2, 3], valence: 3 },
+            { num: 6, sym: "C", name: "Carbon", period: 2, group: 14, cat: "nonmetal", shells: [2, 4], valence: 4 },
+            { num: 7, sym: "N", name: "Nitrogen", period: 2, group: 15, cat: "nonmetal", shells: [2, 5], valence: 5 },
+            { num: 8, sym: "O", name: "Oxygen", period: 2, group: 16, cat: "nonmetal", shells: [2, 6], valence: 6 },
+            { num: 9, sym: "F", name: "Fluorine", period: 2, group: 17, cat: "halogen", shells: [2, 7], valence: 7 },
+            { num: 10, sym: "Ne", name: "Neon", period: 2, group: 18, cat: "noble", shells: [2, 8], valence: 8 },
+            { num: 11, sym: "Na", name: "Sodium", period: 3, group: 1, cat: "alkali", shells: [2, 8, 1], valence: 1 },
+            { num: 12, sym: "Mg", name: "Magnesium", period: 3, group: 2, cat: "alkaline", shells: [2, 8, 2], valence: 2 },
+            { num: 13, sym: "Al", name: "Aluminum", period: 3, group: 13, cat: "post", shells: [2, 8, 3], valence: 3 },
+            { num: 14, sym: "Si", name: "Silicon", period: 3, group: 14, cat: "metalloid", shells: [2, 8, 4], valence: 4 },
+            { num: 15, sym: "P", name: "Phosphorus", period: 3, group: 15, cat: "nonmetal", shells: [2, 8, 5], valence: 5 },
+            { num: 16, sym: "S", name: "Sulfur", period: 3, group: 16, cat: "nonmetal", shells: [2, 8, 6], valence: 6 },
+            { num: 17, sym: "Cl", name: "Chlorine", period: 3, group: 17, cat: "halogen", shells: [2, 8, 7], valence: 7 },
+            { num: 18, sym: "Ar", name: "Argon", period: 3, group: 18, cat: "noble", shells: [2, 8, 8], valence: 8 },
+            { num: 19, sym: "K", name: "Potassium", period: 4, group: 1, cat: "alkali", shells: [2, 8, 8, 1], valence: 1 },
+            { num: 20, sym: "Ca", name: "Calcium", period: 4, group: 2, cat: "alkaline", shells: [2, 8, 8, 2], valence: 2 },
+            { num: 21, sym: "Sc", name: "Scandium", period: 4, group: 3, cat: "transition", shells: [2, 8, 9, 2], valence: 2 },
+            { num: 22, sym: "Ti", name: "Titanium", period: 4, group: 4, cat: "transition", shells: [2, 8, 10, 2], valence: 2 },
+            { num: 23, sym: "V", name: "Vanadium", period: 4, group: 5, cat: "transition", shells: [2, 8, 11, 2], valence: 2 },
+            { num: 24, sym: "Cr", name: "Chromium", period: 4, group: 6, cat: "transition", shells: [2, 8, 13, 1], valence: 1 },
+            { num: 25, sym: "Mn", name: "Manganese", period: 4, group: 7, cat: "transition", shells: [2, 8, 13, 2], valence: 2 },
+            { num: 26, sym: "Fe", name: "Iron", period: 4, group: 8, cat: "transition", shells: [2, 8, 14, 2], valence: 2 },
+            { num: 27, sym: "Co", name: "Cobalt", period: 4, group: 9, cat: "transition", shells: [2, 8, 15, 2], valence: 2 },
+            { num: 28, sym: "Ni", name: "Nickel", period: 4, group: 10, cat: "transition", shells: [2, 8, 16, 2], valence: 2 },
+            { num: 29, sym: "Cu", name: "Copper", period: 4, group: 11, cat: "transition", shells: [2, 8, 18, 1], valence: 1 },
+            { num: 30, sym: "Zn", name: "Zinc", period: 4, group: 12, cat: "transition", shells: [2, 8, 18, 2], valence: 2 },
+            { num: 31, sym: "Ga", name: "Gallium", period: 4, group: 13, cat: "post", shells: [2, 8, 18, 3], valence: 3 },
+            { num: 32, sym: "Ge", name: "Germanium", period: 4, group: 14, cat: "metalloid", shells: [2, 8, 18, 4], valence: 4 },
+            { num: 33, sym: "As", name: "Arsenic", period: 4, group: 15, cat: "metalloid", shells: [2, 8, 18, 5], valence: 5 },
+            { num: 34, sym: "Se", name: "Selenium", period: 4, group: 16, cat: "nonmetal", shells: [2, 8, 18, 6], valence: 6 },
+            { num: 35, sym: "Br", name: "Bromine", period: 4, group: 17, cat: "halogen", shells: [2, 8, 18, 7], valence: 7 },
+            { num: 36, sym: "Kr", name: "Krypton", period: 4, group: 18, cat: "noble", shells: [2, 8, 18, 8], valence: 8 },
+            { num: 37, sym: "Rb", name: "Rubidium", period: 5, group: 1, cat: "alkali", shells: [2, 8, 18, 8, 1], valence: 1 },
+            { num: 38, sym: "Sr", name: "Strontium", period: 5, group: 2, cat: "alkaline", shells: [2, 8, 18, 8, 2], valence: 2 },
+            { num: 39, sym: "Y", name: "Yttrium", period: 5, group: 3, cat: "transition", shells: [2, 8, 18, 9, 2], valence: 2 },
+            { num: 40, sym: "Zr", name: "Zirconium", period: 5, group: 4, cat: "transition", shells: [2, 8, 18, 10, 2], valence: 2 },
+            { num: 41, sym: "Nb", name: "Niobium", period: 5, group: 5, cat: "transition", shells: [2, 8, 18, 12, 1], valence: 1 },
+            { num: 42, sym: "Mo", name: "Molybdenum", period: 5, group: 6, cat: "transition", shells: [2, 8, 18, 13, 1], valence: 1 },
+            { num: 43, sym: "Tc", name: "Technetium", period: 5, group: 7, cat: "transition", shells: [2, 8, 18, 13, 2], valence: 2 },
+            { num: 44, sym: "Ru", name: "Ruthenium", period: 5, group: 8, cat: "transition", shells: [2, 8, 18, 15, 1], valence: 1 },
+            { num: 45, sym: "Rh", name: "Rhodium", period: 5, group: 9, cat: "transition", shells: [2, 8, 18, 16, 1], valence: 1 },
+            { num: 46, sym: "Pd", name: "Palladium", period: 5, group: 10, cat: "transition", shells: [2, 8, 18, 18], valence: 0 },
+            { num: 47, sym: "Ag", name: "Silver", period: 5, group: 11, cat: "transition", shells: [2, 8, 18, 18, 1], valence: 1 },
+            { num: 48, sym: "Cd", name: "Cadmium", period: 5, group: 12, cat: "transition", shells: [2, 8, 18, 18, 2], valence: 2 },
+            { num: 49, sym: "In", name: "Indium", period: 5, group: 13, cat: "post", shells: [2, 8, 18, 18, 3], valence: 3 },
+            { num: 50, sym: "Sn", name: "Tin", period: 5, group: 14, cat: "post", shells: [2, 8, 18, 18, 4], valence: 4 },
+            { num: 51, sym: "Sb", name: "Antimony", period: 5, group: 15, cat: "metalloid", shells: [2, 8, 18, 18, 5], valence: 5 },
+            { num: 52, sym: "Te", name: "Tellurium", period: 5, group: 16, cat: "metalloid", shells: [2, 8, 18, 18, 6], valence: 6 },
+            { num: 53, sym: "I", name: "Iodine", period: 5, group: 17, cat: "halogen", shells: [2, 8, 18, 18, 7], valence: 7 },
+            { num: 54, sym: "Xe", name: "Xenon", period: 5, group: 18, cat: "noble", shells: [2, 8, 18, 18, 8], valence: 8 },
+            { num: 55, sym: "Cs", name: "Cesium", period: 6, group: 1, cat: "alkali", shells: [2, 8, 18, 18, 8, 1], valence: 1 },
+            { num: 56, sym: "Ba", name: "Barium", period: 6, group: 2, cat: "alkaline", shells: [2, 8, 18, 18, 8, 2], valence: 2 },
+            { num: 57, sym: "La", name: "Lanthanum", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 18, 9, 2], valence: 2 },
+            { num: 58, sym: "Ce", name: "Cerium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 19, 9, 2], valence: 2 },
+            { num: 59, sym: "Pr", name: "Praseodymium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 21, 8, 2], valence: 2 },
+            { num: 60, sym: "Nd", name: "Neodymium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 22, 8, 2], valence: 2 },
+            { num: 61, sym: "Pm", name: "Promethium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 23, 8, 2], valence: 2 },
+            { num: 62, sym: "Sm", name: "Samarium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 24, 8, 2], valence: 2 },
+            { num: 63, sym: "Eu", name: "Europium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 25, 8, 2], valence: 2 },
+            { num: 64, sym: "Gd", name: "Gadolinium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 25, 9, 2], valence: 2 },
+            { num: 65, sym: "Tb", name: "Terbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 27, 8, 2], valence: 2 },
+            { num: 66, sym: "Dy", name: "Dysprosium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 28, 8, 2], valence: 2 },
+            { num: 67, sym: "Ho", name: "Holmium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 29, 8, 2], valence: 2 },
+            { num: 68, sym: "Er", name: "Erbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 30, 8, 2], valence: 2 },
+            { num: 69, sym: "Tm", name: "Thulium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 31, 8, 2], valence: 2 },
+            { num: 70, sym: "Yb", name: "Ytterbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 32, 8, 2], valence: 2 },
+            { num: 71, sym: "Lu", name: "Lutetium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 32, 9, 2], valence: 2 },
+            { num: 72, sym: "Hf", name: "Hafnium", period: 6, group: 4, cat: "transition", shells: [2, 8, 18, 32, 10, 2], valence: 2 },
+            { num: 73, sym: "Ta", name: "Tantalum", period: 6, group: 5, cat: "transition", shells: [2, 8, 18, 32, 11, 2], valence: 2 },
+            { num: 74, sym: "W", name: "Tungsten", period: 6, group: 6, cat: "transition", shells: [2, 8, 18, 32, 12, 2], valence: 2 },
+            { num: 75, sym: "Re", name: "Rhenium", period: 6, group: 7, cat: "transition", shells: [2, 8, 18, 32, 13, 2], valence: 2 },
+            { num: 76, sym: "Os", name: "Osmium", period: 6, group: 8, cat: "transition", shells: [2, 8, 18, 32, 14, 2], valence: 2 },
+            { num: 77, sym: "Ir", name: "Iridium", period: 6, group: 9, cat: "transition", shells: [2, 8, 18, 32, 15, 2], valence: 2 },
+            { num: 78, sym: "Pt", name: "Platinum", period: 6, group: 10, cat: "transition", shells: [2, 8, 18, 32, 17, 1], valence: 1 },
+            { num: 79, sym: "Au", name: "Gold", period: 6, group: 11, cat: "transition", shells: [2, 8, 18, 32, 18, 1], valence: 1 },
+            { num: 80, sym: "Hg", name: "Mercury", period: 6, group: 12, cat: "transition", shells: [2, 8, 18, 32, 18, 2], valence: 2 },
+            { num: 81, sym: "Tl", name: "Thallium", period: 6, group: 13, cat: "post", shells: [2, 8, 18, 32, 18, 3], valence: 3 },
+            { num: 82, sym: "Pb", name: "Lead", period: 6, group: 14, cat: "post", shells: [2, 8, 18, 32, 18, 4], valence: 4 },
+            { num: 83, sym: "Bi", name: "Bismuth", period: 6, group: 15, cat: "post", shells: [2, 8, 18, 32, 18, 5], valence: 5 },
+            { num: 84, sym: "Po", name: "Polonium", period: 6, group: 16, cat: "post", shells: [2, 8, 18, 32, 18, 6], valence: 6 },
+            { num: 85, sym: "At", name: "Astatine", period: 6, group: 17, cat: "halogen", shells: [2, 8, 18, 32, 18, 7], valence: 7 },
+            { num: 86, sym: "Rn", name: "Radon", period: 6, group: 18, cat: "noble", shells: [2, 8, 18, 32, 18, 8], valence: 8 },
+            { num: 87, sym: "Fr", name: "Francium", period: 7, group: 1, cat: "alkali", shells: [2, 8, 18, 32, 18, 8, 1], valence: 1 },
+            { num: 88, sym: "Ra", name: "Radium", period: 7, group: 2, cat: "alkaline", shells: [2, 8, 18, 32, 18, 8, 2], valence: 2 },
+            { num: 89, sym: "Ac", name: "Actinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 18, 9, 2], valence: 2 },
+            { num: 90, sym: "Th", name: "Thorium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 18, 10, 2], valence: 2 },
+            { num: 91, sym: "Pa", name: "Protactinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 20, 9, 2], valence: 2 },
+            { num: 92, sym: "U", name: "Uranium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 21, 9, 2], valence: 2 },
+            { num: 93, sym: "Np", name: "Neptunium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 22, 9, 2], valence: 2 },
+            { num: 94, sym: "Pu", name: "Plutonium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 24, 8, 2], valence: 2 },
+            { num: 95, sym: "Am", name: "Americium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 25, 8, 2], valence: 2 },
+            { num: 96, sym: "Cm", name: "Curium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 25, 9, 2], valence: 2 },
+            { num: 97, sym: "Bk", name: "Berkelium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 27, 8, 2], valence: 2 },
+            { num: 98, sym: "Cf", name: "Californium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 28, 8, 2], valence: 2 },
+            { num: 99, sym: "Es", name: "Einsteinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 29, 8, 2], valence: 2 },
+            { num: 100, sym: "Fm", name: "Fermium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 30, 8, 2], valence: 2 },
+            { num: 101, sym: "Md", name: "Mendelevium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 31, 8, 2], valence: 2 },
+            { num: 102, sym: "No", name: "Nobelium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 32, 8, 2], valence: 2 },
+            { num: 103, sym: "Lr", name: "Lawrencium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 32, 9, 2], valence: 2 },
+            { num: 104, sym: "Rf", name: "Rutherfordium", period: 7, group: 4, cat: "transition", shells: [2, 8, 18, 32, 32, 10, 2], valence: 2 },
+            { num: 105, sym: "Db", name: "Dubnium", period: 7, group: 5, cat: "transition", shells: [2, 8, 18, 32, 32, 11, 2], valence: 2 },
+            { num: 106, sym: "Sg", name: "Seaborgium", period: 7, group: 6, cat: "transition", shells: [2, 8, 18, 32, 32, 12, 2], valence: 2 },
+            { num: 107, sym: "Bh", name: "Bohrium", period: 7, group: 7, cat: "transition", shells: [2, 8, 18, 32, 32, 13, 2], valence: 2 },
+            { num: 108, sym: "Hs", name: "Hassium", period: 7, group: 8, cat: "transition", shells: [2, 8, 18, 32, 32, 14, 2], valence: 2 },
+            { num: 109, sym: "Mt", name: "Meitnerium", period: 7, group: 9, cat: "transition", shells: [2, 8, 18, 32, 32, 15, 2], valence: 2 },
+            { num: 110, sym: "Ds", name: "Darmstadtium", period: 7, group: 10, cat: "transition", shells: [2, 8, 18, 32, 32, 16, 2], valence: 2 },
+            { num: 111, sym: "Rg", name: "Roentgenium", period: 7, group: 11, cat: "transition", shells: [2, 8, 18, 32, 32, 17, 2], valence: 2 },
+            { num: 112, sym: "Cn", name: "Copernicium", period: 7, group: 12, cat: "transition", shells: [2, 8, 18, 32, 32, 18, 2], valence: 2 },
+            { num: 113, sym: "Nh", name: "Nihonium", period: 7, group: 13, cat: "post", shells: [2, 8, 18, 32, 32, 18, 3], valence: 3 },
+            { num: 114, sym: "Fl", name: "Flerovium", period: 7, group: 14, cat: "post", shells: [2, 8, 18, 32, 32, 18, 4], valence: 4 },
+            { num: 115, sym: "Mc", name: "Moscovium", period: 7, group: 15, cat: "post", shells: [2, 8, 18, 32, 32, 18, 5], valence: 5 },
+            { num: 116, sym: "Lv", name: "Livermorium", period: 7, group: 16, cat: "post", shells: [2, 8, 18, 32, 32, 18, 6], valence: 6 },
+            { num: 117, sym: "Ts", name: "Tennessine", period: 7, group: 17, cat: "halogen", shells: [2, 8, 18, 32, 32, 18, 7], valence: 7 },
+            { num: 118, sym: "Og", name: "Oganesson", period: 7, group: 18, cat: "noble", shells: [2, 8, 18, 32, 32, 18, 8], valence: 8 }
+        ];
+
+        /* ================= GAME STATE VARIABLES ================= */
+        let currentGame = 'sprint';
+        let currentItemIndex = 0;
+        let score = 0;
+        let correctAnswersCount = 0;
+        let gameTimeRemaining = 120; // 2 minutes
+        let timerInterval = null;
+        let questionPool = [];
+        let userResponses = [];
+        let isAudioMuted = false;
+        let selectedBohrElement = ELEMENTS[10]; // Default Sodium
+        let bohrAnimAngle = 0;
+
+        /* ================= AUDIO SYNTHESIZER ================= */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (isAudioMuted || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(164.81, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.2);
+                }
+            } catch(e){}
+        }
+
+        function toggleAudio() {
+            isAudioMuted = !isAudioMuted;
+            document.getElementById('audio-toggle-btn').innerHTML = isAudioMuted 
+                ? `<i class="fa-solid fa-volume-xmark text-slate-500 text-xs"></i>`
+                : `<i class="fa-solid fa-volume-high text-xs"></i>`;
+        }
+
+        /* ================= SCREEN NAVIGATION ================= */
+        function showScreen(screenId) {
+            ['home', 'game', 'results', 'table'].forEach(s => {
+                document.getElementById(`screen-${s}`).classList.add('hidden');
+            });
+            document.getElementById(`screen-${screenId}`).classList.remove('hidden');
+
+            if (screenId === 'table') {
+                renderPeriodicGrid();
+                renderBohrModel();
+            }
+        }
+
+        /* ================= HELPER UTILITIES ================= */
+        function shuffleArray(arr) {
+            let res = [...arr];
+            for (let i = res.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [res[i], res[j]] = [res[j], res[i]];
+            }
+            return res;
+        }
+
+        /* ================= QUESTION GENERATOR FOR SPRINT MODE ================= */
+        function generateSprintPool() {
+            // 1. Randomly select 50 UNIQUE elements from all 118 elements
+            const shuffledElements = shuffleArray(ELEMENTS);
+            const selectedElements = shuffledElements.slice(0, 50);
+
+            let pool = [];
+
+            selectedElements.forEach(elem => {
+                // Correct answer format strictly: "Period X, Group Y"
+                const correctOption = `Period ${elem.period}, Group ${elem.group}`;
+
+                // 2. Generate 3 unique distractor options
+                let distractors = [];
+                let attempts = 0;
+
+                while (distractors.length < 3 && attempts < 200) {
+                    attempts++;
+                    const randElem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+                    const distractorOption = `Period ${randElem.period}, Group ${randElem.group}`;
+                    
+                    if (distractorOption !== correctOption && !distractors.includes(distractorOption)) {
+                        distractors.push(distractorOption);
+                    }
+                }
+
+                // Fallback generator if needed
+                while (distractors.length < 3) {
+                    const fakeP = (elem.period % 7) + 1;
+                    const fakeG = (elem.group % 18) + 1;
+                    const fakeOpt = `Period ${fakeP}, Group ${fakeG}`;
+                    if (!distractors.includes(fakeOpt) && fakeOpt !== correctOption) {
+                        distractors.push(fakeOpt);
+                    }
+                }
+
+                // Question object
+                pool.push({
+                    prompt: elem.name, // Display ONLY the element name
+                    correctAns: correctOption,
+                    options: shuffleArray([correctOption, ...distractors]),
+                    exp: `${elem.name} (${elem.sym}) is in Period ${elem.period} (${elem.shells.length} electron shell(s)) and Group ${elem.group}.`
+                });
+            });
+
+            return pool;
+        }
+
+        /* ================= OTHER QUESTION GENERATORS ================= */
+        function generateReactivityPool() {
+            let pool = [];
+            const reactivityQuestions = [
+                { p: "Which Group 1 Alkali Metal has 1 valence electron and reacts violently with water?", c: "Sodium", o: ["Sodium", "Magnesium", "Aluminum", "Argon"], e: "Alkali metals (Group 1) have 1 valence electron, rendering them extremely reactive." },
+                { p: "Which Halogen (Group 17) requires only 1 electron to complete its outer shell?", c: "Chlorine", o: ["Chlorine", "Neon", "Sodium", "Calcium"], e: "Group 17 Halogens have 7 valence electrons and gain 1 electron aggressively." },
+                { p: "Why are Group 18 Noble Gases chemically unreactive?", c: "Full valence electron octet", o: ["Full valence electron octet", "Low atomic mass", "High metal conductivity", "Odd proton numbers"], e: "Group 18 elements have full valence shells (8 e-), giving them maximum chemical stability." },
+                { p: "Elements in the SAME PERIOD share which structural property?", c: "Same number of electron shells", o: ["Same number of electron shells", "Same valence electrons", "Identical atomic mass", "Same group number"], e: "Period numbers dictate the total energy levels/electron shells around the nucleus." },
+                { p: "Elements in the SAME GROUP share which chemical property?", c: "Same valence electrons & reactivity pattern", o: ["Same valence electrons & reactivity pattern", "Same number of electron shells", "Identical atomic radius", "Same physical state"], e: "Groups share valence electron counts, determining chemical bonding behavior." }
+            ];
+
+            for (let i = 0; i < 50; i++) {
+                const q = reactivityQuestions[i % reactivityQuestions.length];
+                pool.push({
+                    prompt: q.p,
+                    correctAns: q.c,
+                    options: shuffleArray([...q.o]),
+                    exp: q.e
+                });
+            }
+            return shuffleArray(pool);
+        }
+
+        function generateBlitzPool() {
+            let pool = [];
+            const shuffled = shuffleArray(ELEMENTS);
+            const selected = shuffled.slice(0, 50);
+
+            selected.forEach(elem => {
+                const correctOption = elem.name;
+                let distractors = [];
+
+                while (distractors.length < 3) {
+                    const randElem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+                    if (randElem.name !== correctOption && !distractors.includes(randElem.name)) {
+                        distractors.push(randElem.name);
+                    }
+                }
+
+                pool.push({
+                    prompt: `Symbol: ${elem.sym} | Atomic #: ${elem.num} (${elem.shells.join('-')} e-)`,
+                    correctAns: correctOption,
+                    options: shuffleArray([correctOption, ...distractors]),
+                    exp: `${elem.name} has symbol ${elem.sym}, atomic number ${elem.num}, and electron configuration ${elem.shells.join('-')}.`
+                });
+            });
+
+            return pool;
+        }
+
+        /* ================= GAMEPLAY ENGINE ================= */
+        function startGame(mode) {
+            currentGame = mode;
+            currentItemIndex = 0;
+            score = 0;
+            correctAnswersCount = 0;
+            gameTimeRemaining = 120; // 2 minutes
+            userResponses = [];
+
+            if (mode === 'sprint') {
+                questionPool = generateSprintPool();
+            } else if (mode === 'reactivity') {
+                questionPool = generateReactivityPool();
+            } else {
+                questionPool = generateBlitzPool();
+            }
+
+            document.getElementById('game-score').innerText = '0';
+            document.getElementById('current-item-num').innerText = '1';
+            updateTimerDisplay();
+
+            showScreen('game');
+            startTimer();
+            loadNextQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                gameTimeRemaining--;
+                updateTimerDisplay();
+
+                if (gameTimeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    finishRound();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(gameTimeRemaining / 60);
+            const secs = gameTimeRemaining % 60;
+            document.getElementById('game-timer').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function loadNextQuestion() {
+            if (currentItemIndex >= 50 || gameTimeRemaining <= 0) {
+                finishRound();
+                return;
+            }
+
+            document.getElementById('current-item-num').innerText = currentItemIndex + 1;
+            const progressPct = (currentItemIndex / 50) * 100;
+            document.getElementById('game-progress-bar').style.width = `${progressPct}%`;
+
+            const item = questionPool[currentItemIndex];
+            const arena = document.getElementById('question-arena');
+
+            if (currentGame === 'sprint') {
+                document.getElementById('game-title').innerText = "GROUP & PERIOD SPRINT";
+                
+                // Group & Period Sprint Layout:
+                // Prompts displaying ONLY the element name
+                // Options displaying ONLY "Period X, Group Y" in ONE single horizontal line
+                arena.innerHTML = `
+                    <div class="w-full flex flex-col items-center gap-8">
+                        <div class="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center shadow-2xl w-full max-w-xl">
+                            <span class="text-[10px] font-bold text-cyan-400 font-orbitron uppercase tracking-widest block mb-2">Element Target</span>
+                            <p class="text-4xl sm:text-5xl font-black font-orbitron text-slate-100 tracking-wide">${item.prompt}</p>
+                        </div>
+
+                        <div class="horizontal-options-container">
+                            ${item.options.map(opt => `
+                                <button onclick="handleAnswerSelection('${opt.replace(/'/g, "\\'")}')" class="horizontal-option-btn">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('game-title').innerText = 
+                    currentGame === 'reactivity' ? "REACTIVITY & STRUCTURE" : "ELEMENT IDENTIFICATION BLITZ";
+
+                arena.innerHTML = `
+                    <div class="w-full max-w-xl flex flex-col items-center gap-6">
+                        <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 text-center shadow-xl w-full">
+                            <p class="text-xl font-bold font-orbitron text-slate-100 leading-snug">${item.prompt}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                            ${item.options.map(opt => `
+                                <button onclick="handleAnswerSelection('${opt.replace(/'/g, "\\'")}')" class="p-4 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-400 text-center text-sm font-bold text-slate-200 transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-md">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function handleAnswerSelection(selectedOpt) {
+            const currentQuestion = questionPool[currentItemIndex];
+            const isCorrect = (selectedOpt === currentQuestion.correctAns);
+
+            if (isCorrect) {
+                score += 100;
+                correctAnswersCount++;
+                playSound('correct');
+                showToast('Correct!', true);
+            } else {
+                playSound('wrong');
+                showToast('Incorrect', false);
+            }
+
+            document.getElementById('game-score').innerText = score;
+
+            // Log item attempt
+            userResponses.push({
+                itemNum: currentItemIndex + 1,
+                prompt: currentQuestion.prompt,
+                userAns: selectedOpt,
+                correctAns: currentQuestion.correctAns,
+                isCorrect: isCorrect,
+                exp: currentQuestion.exp
+            });
+
+            // Instant auto-advance
+            currentItemIndex++;
+            loadNextQuestion();
+        }
+
+        function showToast(msg, isSuccess) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            if (isSuccess) {
+                toast.className = "fixed top-20 right-5 z-50 transform translate-x-0 transition-all duration-300 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border text-sm font-bold bg-emerald-950 border-emerald-700 text-emerald-300 opacity-100";
+                toastIcon.className = "fa-solid fa-circle-check text-lg text-emerald-400";
+            } else {
+                toast.className = "fixed top-20 right-5 z-50 transform translate-x-0 transition-all duration-300 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border text-sm font-bold bg-rose-950 border-rose-700 text-rose-300 opacity-100";
+                toastIcon.className = "fa-solid fa-circle-xmark text-lg text-rose-400";
+            }
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-72', 'opacity-0');
+            }, 800);
+        }
+
+        function confirmExitGame() {
+            if (confirm("Quit current game round and return to menu?")) {
+                clearInterval(timerInterval);
+                showScreen('home');
+            }
+        }
+
+        function finishRound() {
+            clearInterval(timerInterval);
+
+            const finishedItems = userResponses.length;
+            const accuracyPct = finishedItems > 0 ? Math.round((correctAnswersCount / finishedItems) * 100) : 0;
+            const timeElapsedSecs = 120 - Math.max(0, gameTimeRemaining);
+            const minsUsed = Math.floor(timeElapsedSecs / 60);
+            const secsUsed = timeElapsedSecs % 60;
+
+            // Render stats card metrics
+            document.getElementById('res-correctness').innerText = `${correctAnswersCount} / 50`;
+            document.getElementById('res-accuracy').innerText = `${accuracyPct}%`;
+            document.getElementById('res-time-used').innerText = `${minsUsed}m ${secsUsed.toString().padStart(2, '0')}s`;
+            document.getElementById('res-finished').innerText = `${finishedItems} / 50`;
+
+            // Populate Breakdown Review Table
+            const tbody = document.getElementById('review-table-body');
+            tbody.innerHTML = userResponses.map(r => `
+                <tr class="hover:bg-slate-800/30">
+                    <td class="p-2 font-orbitron text-slate-400">${r.itemNum}</td>
+                    <td class="p-2 font-bold text-slate-200">${r.prompt}</td>
+                    <td class="p-2 font-semibold ${r.isCorrect ? 'text-emerald-400' : 'text-rose-400'}">${r.userAns}</td>
+                    <td class="p-2 font-semibold text-cyan-400">${r.correctAns}</td>
+                    <td class="p-2 text-slate-400 leading-tight">${r.exp}</td>
+                </tr>
+            `).join('');
+
+            showScreen('results');
+        }
+
+        function restartCurrentGame() {
+            startGame(currentGame);
+        }
+
+        /* ================= PERIODIC TABLE & BOHR VISUALIZER ================= */
+        function renderPeriodicGrid() {
+            const grid = document.getElementById('periodic-grid');
+            grid.innerHTML = '';
+
+            // Standard layout grid mapping for 118 elements
+            for (let r = 1; r <= 7; r++) {
+                for (let c = 1; c <= 18; c++) {
+                    const elem = ELEMENTS.find(e => e.period === r && e.group === c && e.num <= 56 || e.num >= 72 && e.num <= 88 || e.num >= 104);
+                    
+                    if (elem) {
+                        const cell = document.createElement('div');
+                        const catColor = getCatBgClass(elem.cat);
+                        cell.className = `p-1 rounded ${catColor} border border-slate-800 cursor-pointer hover:scale-110 hover:z-20 transition-all flex flex-col items-center justify-center text-center`;
+                        cell.onclick = () => selectBohrElement(elem);
+                        cell.innerHTML = `
+                            <span class="text-[7px] text-slate-400 block font-semibold">${elem.num}</span>
+                            <span class="font-orbitron font-black text-[10px] text-slate-100">${elem.sym}</span>
+                        `;
+                        grid.appendChild(cell);
+                    } else if (r === 6 && c === 3) {
+                        // Lanthanides marker
+                        const cell = document.createElement('div');
+                        cell.className = "p-1 rounded bg-lanthanide/20 border border-lanthanide/50 text-lanthanide font-bold text-[8px] flex items-center justify-center text-center";
+                        cell.innerText = "57-71";
+                        grid.appendChild(cell);
+                    } else if (r === 7 && c === 3) {
+                        // Actinides marker
+                        const cell = document.createElement('div');
+                        cell.className = "p-1 rounded bg-actinide/20 border border-actinide/50 text-actinide font-bold text-[8px] flex items-center justify-center text-center";
+                        cell.innerText = "89-103";
+                        grid.appendChild(cell);
+                    } else {
+                        const emptyCell = document.createElement('div');
+                        grid.appendChild(emptyCell);
+                    }
+                }
+            }
+        }
+
+        function getCatBgClass(cat) {
+            switch(cat) {
+                case 'alkali': return 'bg-alkali/20 text-alkali hover:bg-alkali/40';
+                case 'alkaline': return 'bg-alkaline/20 text-alkaline hover:bg-alkaline/40';
+                case 'transition': return 'bg-transition/20 text-transition hover:bg-transition/40';
+                case 'post': return 'bg-post/20 text-post hover:bg-post/40';
+                case 'metalloid': return 'bg-metalloid/20 text-metalloid hover:bg-metalloid/40';
+                case 'nonmetal': return 'bg-nonmetal/20 text-nonmetal hover:bg-nonmetal/40';
+                case 'halogen': return 'bg-halogen/20 text-halogen hover:bg-halogen/40';
+                case 'noble': return 'bg-noble/20 text-noble hover:bg-noble/40';
+                case 'lanthanide': return 'bg-lanthanide/20 text-lanthanide hover:bg-lanthanide/40';
+                case 'actinide': return 'bg-actinide/20 text-actinide hover:bg-actinide/40';
+                default: return 'bg-slate-800 text-slate-200';
+            }
+        }
+
+        function selectBohrElement(elem) {
+            selectedBohrElement = elem;
+            document.getElementById('bohr-symbol').innerText = elem.sym;
+            document.getElementById('bohr-name').innerText = elem.name;
+            document.getElementById('bohr-category').innerText = elem.cat;
+            document.getElementById('bohr-num').innerText = elem.num;
+            document.getElementById('bohr-period').innerText = `${elem.period} (${elem.shells.length} Shells)`;
+            document.getElementById('bohr-group').innerText = elem.group;
+            document.getElementById('bohr-valence').innerText = elem.valence;
+        }
+
+        function renderBohrModel() {
+            const canvas = document.getElementById('bohr-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                // Draw Nucleus
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 16, 0, Math.PI * 2);
+                ctx.fillStyle = '#06b6d4';
+                ctx.fill();
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 10px Orbitron';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(selectedBohrElement.sym, centerX, centerY);
+
+                // Draw Shell Orbit Circles and Electrons
+                const shells = selectedBohrElement.shells;
+                const baseRadius = 24;
+
+                shells.forEach((electronCount, shellIdx) => {
+                    const radius = baseRadius + (shellIdx * 15);
+
+                    // Orbit line
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(51, 65, 85, 0.5)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+
+                    // Electrons
+                    for (let e = 0; e < electronCount; e++) {
+                        const angle = bohrAnimAngle * (shellIdx + 1) * 0.4 + (e * (Math.PI * 2 / electronCount));
+                        const ex = centerX + Math.cos(angle) * radius;
+                        const ey = centerY + Math.sin(angle) * radius;
+
+                        ctx.beginPath();
+                        ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
+                        // Highlight valence shell electrons in cyan
+                        ctx.fillStyle = (shellIdx === shells.length - 1) ? '#22d3ee' : '#cbd5e1';
+                        ctx.fill();
+                        ctx.strokeStyle = '#0f172a';
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                });
+
+                bohrAnimAngle += 0.015;
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        /* ================= INITIALIZATION ================= */
+        window.onload = function() {
+            showScreen('home');
+        };
+    </script>
+</body>
+</html>
