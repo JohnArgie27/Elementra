@@ -1,25 +1,31 @@
 {
   "name": "Elementra - Periodic Chemistry Master",
   "short_name": "Elementra",
-  "start_url": "./index.html?v=1",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#090d16",
   "icons": [
     {
-      "src": "./logo.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./logo.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./logo.png",
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
