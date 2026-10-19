@@ -380,9 +380,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
                 <!-- GRID DISPLAY CONTAINER (COMPLETE 118 ELEMENTS) -->
                 <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl overflow-x-auto flex flex-col justify-between">
-                    <div id="periodic-grid" class="grid grid-cols-18 gap-1 min-w-[750px]">
-                        <!-- Dynamic cells populated via JS -->
-                    </div>
+                   <div id="periodic-grid" style="display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); gap: 3px;" class="min-w-[750px]">
+    <!-- Dynamic cells populated via JS -->
+</div>
                 </div>
 
                 <!-- BOHR VISUALIZER & COMPLETE ELEMENT INFO SIDEBAR -->
@@ -903,6 +903,7 @@
         }
 
         /* ================= PERIODIC TABLE & BOHR VISUALIZER ================= */
+        /* ================= PERIODIC TABLE & BOHR VISUALIZER ================= */
         function filterFamily(cat) {
             activeFamilyFilter = cat;
             renderPeriodicGrid();
@@ -912,20 +913,45 @@
             const grid = document.getElementById('periodic-grid');
             grid.innerHTML = '';
 
-            // Standard layout grid mapping for 118 elements (Rows 1-9 including Lanthanides & Actinides)
+            // Standard 9-row layout (7 main periods + 2 rows for Lanthanides & Actinides)
             for (let r = 1; r <= 9; r++) {
-                // Add visual row spacer before Lanthanides/Actinides if r === 8
                 for (let c = 1; c <= 18; c++) {
                     let elem = null;
 
                     if (r <= 7) {
-                        elem = ELEMENTS.find(e => e.period === r && e.group === c);
+                        // Standard main table body (Periods 1 to 7)
+                        elem = ELEMENTS.find(e => {
+                            if (e.cat === 'lanthanide' || e.cat === 'actinide') return false; // Handled separately below
+                            return e.period === r && e.group === c;
+                        });
                     } else if (r === 8) {
-                        // Lanthanides (La 57 to Lu 71 mapped to columns 3 to 17)
-                        elem = ELEMENTS.find(e => e.cat === 'lanthanide' && e.group === c);
+                        // Lanthanide series (Atomic numbers 57 to 71 mapped to columns 3 to 17)
+                        const lanthanideMap = [57,58,59,60,61,62,63,64,65,66,67,68,69,70,71];
+                        if (c === 1) {
+                            const label = document.createElement('div');
+                            label.className = "text-[9px] text-lanthanide font-bold flex items-center justify-center";
+                            label.innerText = "La";
+                            grid.appendChild(label);
+                            continue;
+                        }
+                        if (c >= 3 && c <= 17) {
+                            const lanthanideNum = lanthanideMap[c - 3];
+                            elem = ELEMENTS.find(e => e.num === lanthanideNum);
+                        }
                     } else if (r === 9) {
-                        // Actinides (Ac 89 to Lr 103 mapped to columns 3 to 17)
-                        elem = ELEMENTS.find(e => e.cat === 'actinide' && e.group === c);
+                        // Actinide series (Atomic numbers 89 to 103 mapped to columns 3 to 17)
+                        const actinideMap = [89,90,91,92,93,94,95,96,97,98,99,100,101,102,103];
+                        if (c === 1) {
+                            const label = document.createElement('div');
+                            label.className = "text-[9px] text-actinide font-bold flex items-center justify-center";
+                            label.innerText = "Ac";
+                            grid.appendChild(label);
+                            continue;
+                        }
+                        if (c >= 3 && c <= 17) {
+                            const actinideNum = actinideMap[c - 3];
+                            elem = ELEMENTS.find(e => e.num === actinideNum);
+                        }
                     }
 
                     if (elem) {
