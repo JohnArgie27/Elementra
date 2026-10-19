@@ -24,7 +24,7 @@
                     },
                     colors: {
                         alkali: '#ef4444',
-                        alkaline: '#f97316',
+                        alkaline: '#22c55e', /* Adjusted green for alkaline family */
                         transition: '#eab308',
                         post: '#10b981',
                         metalloid: '#06b6d4',
@@ -160,7 +160,7 @@
                     Master Periodic <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Trends & Structure</span>
                 </h2>
                 <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
-                    Test your speed across all 118 elements, 7 Periods, and 18 Groups. Analyze electron shells, periodic coordinates, and reactivity gradients!
+                    Test your speed across all 118 elements, 7 Periods, and 18 Groups with a 3-minute challenge limit!
                 </p>
             </div>
 
@@ -180,7 +180,7 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
-                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-cyan-400"></i> 2:00 Time</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-cyan-400"></i> 3:00 Time</span>
                             <span>•</span>
                             <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-cyan-400"></i> 50 Items</span>
                         </div>
@@ -204,7 +204,7 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
-                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-400"></i> 2:00 Time</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-amber-400"></i> 3:00 Time</span>
                             <span>•</span>
                             <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-amber-400"></i> 50 Items</span>
                         </div>
@@ -228,7 +228,7 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-3 text-[11px] text-slate-400 font-semibold mb-5 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
-                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-purple-400"></i> 2:00 Time</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-clock text-purple-400"></i> 3:00 Time</span>
                             <span>•</span>
                             <span class="flex items-center gap-1"><i class="fa-solid fa-list-check text-purple-400"></i> 50 Items</span>
                         </div>
@@ -261,7 +261,7 @@
                 <div class="flex items-center gap-6">
                     <div class="text-center">
                         <div class="text-[10px] text-slate-400 uppercase font-semibold">Time Remaining</div>
-                        <div id="game-timer" class="font-orbitron font-black text-xl text-amber-400">02:00</div>
+                        <div id="game-timer" class="font-orbitron font-black text-xl text-amber-400">03:00</div>
                     </div>
                     <div class="text-center">
                         <div class="text-[10px] text-slate-400 uppercase font-semibold">Score</div>
@@ -307,7 +307,7 @@
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
                     <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Time Used</div>
                     <div id="res-time-used" class="font-orbitron font-black text-2xl text-amber-400">0m 00s</div>
-                    <div class="text-[10px] text-slate-500 mt-1">Limit: 2m 00s</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Limit: 3m 00s</div>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-center">
                     <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Finished Items</div>
@@ -356,36 +356,37 @@
 
         <!-- SCREEN 4: INTERACTIVE PERIODIC TABLE & BOHR VISUALIZER -->
         <section id="screen-table" class="hidden flex-1 flex flex-col py-4">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h2 class="text-2xl font-black font-orbitron text-slate-100">Interactive Periodic Table (118 Elements)</h2>
-                    <p class="text-slate-400 text-xs">Explore elements across 7 Periods and 18 Groups. Click any element to view its atomic structure & Bohr model!</p>
+                    <p class="text-slate-400 text-xs">Click any chemical family badge below to highlight its elements. Click any element card for full data & Bohr model simulation!</p>
                 </div>
 
-                <!-- CATEGORY LEGEND -->
+                <!-- CATEGORY LEGEND / FAMILY FILTER BUTTONS -->
                 <div class="flex flex-wrap gap-1.5 text-[10px]">
-                    <span class="px-2 py-1 rounded bg-alkali/20 border border-alkali/50 text-alkali font-semibold">Alkali</span>
-                    <span class="px-2 py-1 rounded bg-alkaline/20 border border-alkaline/50 text-alkaline font-semibold">Alkaline</span>
-                    <span class="px-2 py-1 rounded bg-transition/20 border border-transition/50 text-transition font-semibold">Transition</span>
-                    <span class="px-2 py-1 rounded bg-post/20 border border-post/50 text-post font-semibold">Post-Trans</span>
-                    <span class="px-2 py-1 rounded bg-metalloid/20 border border-metalloid/50 text-metalloid font-semibold">Metalloid</span>
-                    <span class="px-2 py-1 rounded bg-nonmetal/20 border border-nonmetal/50 text-nonmetal font-semibold">Nonmetal</span>
-                    <span class="px-2 py-1 rounded bg-halogen/20 border border-halogen/50 text-halogen font-semibold">Halogen</span>
-                    <span class="px-2 py-1 rounded bg-noble/20 border border-noble/50 text-noble font-semibold">Noble Gas</span>
-                    <span class="px-2 py-1 rounded bg-lanthanide/20 border border-lanthanide/50 text-lanthanide font-semibold">Lanthanide</span>
-                    <span class="px-2 py-1 rounded bg-actinide/20 border border-actinide/50 text-actinide font-semibold">Actinide</span>
+                    <button onclick="filterFamily('alkali')" class="px-2.5 py-1 rounded bg-alkali/20 border border-alkali/50 text-alkali font-semibold hover:bg-alkali/40 transition cursor-pointer">Alkali</button>
+                    <button onclick="filterFamily('alkaline')" class="px-2.5 py-1 rounded bg-alkaline/20 border border-alkaline/50 text-alkaline font-semibold hover:bg-alkaline/40 transition cursor-pointer">Alkaline</button>
+                    <button onclick="filterFamily('transition')" class="px-2.5 py-1 rounded bg-transition/20 border border-transition/50 text-transition font-semibold hover:bg-transition/40 transition cursor-pointer">Transition</button>
+                    <button onclick="filterFamily('post')" class="px-2.5 py-1 rounded bg-post/20 border border-post/50 text-post font-semibold hover:bg-post/40 transition cursor-pointer">Post-Trans</button>
+                    <button onclick="filterFamily('metalloid')" class="px-2.5 py-1 rounded bg-metalloid/20 border border-metalloid/50 text-metalloid font-semibold hover:bg-metalloid/40 transition cursor-pointer">Metalloid</button>
+                    <button onclick="filterFamily('nonmetal')" class="px-2.5 py-1 rounded bg-nonmetal/20 border border-nonmetal/50 text-nonmetal font-semibold hover:bg-nonmetal/40 transition cursor-pointer">Nonmetal</button>
+                    <button onclick="filterFamily('halogen')" class="px-2.5 py-1 rounded bg-halogen/20 border border-halogen/50 text-halogen font-semibold hover:bg-halogen/40 transition cursor-pointer">Halogen</button>
+                    <button onclick="filterFamily('noble')" class="px-2.5 py-1 rounded bg-noble/20 border border-noble/50 text-noble font-semibold hover:bg-noble/40 transition cursor-pointer">Noble Gas</button>
+                    <button onclick="filterFamily('lanthanide')" class="px-2.5 py-1 rounded bg-lanthanide/20 border border-lanthanide/50 text-lanthanide font-semibold hover:bg-lanthanide/40 transition cursor-pointer">Lanthanide</button>
+                    <button onclick="filterFamily('actinide')" class="px-2.5 py-1 rounded bg-actinide/20 border border-actinide/50 text-actinide font-semibold hover:bg-actinide/40 transition cursor-pointer">Actinide</button>
+                    <button onclick="filterFamily('all')" class="px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-slate-200 font-semibold hover:bg-slate-700 transition cursor-pointer">Reset All</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
-                <!-- GRID DISPLAY CONTAINER -->
+                <!-- GRID DISPLAY CONTAINER (COMPLETE 118 ELEMENTS) -->
                 <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl overflow-x-auto flex flex-col justify-between">
-                    <div id="periodic-grid" class="grid grid-cols-18 gap-1 min-w-[700px]">
+                    <div id="periodic-grid" class="grid grid-cols-18 gap-1 min-w-[750px]">
                         <!-- Dynamic cells populated via JS -->
                     </div>
                 </div>
 
-                <!-- BOHR VISUALIZER SIDEBAR -->
+                <!-- BOHR VISUALIZER & COMPLETE ELEMENT INFO SIDEBAR -->
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col items-center justify-between">
                     <div class="text-center w-full">
                         <span id="bohr-symbol" class="text-3xl font-black font-orbitron text-cyan-400">Na</span>
@@ -394,8 +395,8 @@
                     </div>
 
                     <!-- CANVAS FOR BOHR MODEL -->
-                    <div class="relative w-64 h-64 my-4 flex items-center justify-center">
-                        <canvas id="bohr-canvas" width="256" height="256" class="w-full h-full"></canvas>
+                    <div class="relative w-56 h-56 my-2 flex items-center justify-center">
+                        <canvas id="bohr-canvas" width="224" height="224" class="w-full h-full"></canvas>
                     </div>
 
                     <!-- ATOMIC METRICS -->
@@ -484,20 +485,20 @@
             { num: 55, sym: "Cs", name: "Cesium", period: 6, group: 1, cat: "alkali", shells: [2, 8, 18, 18, 8, 1], valence: 1 },
             { num: 56, sym: "Ba", name: "Barium", period: 6, group: 2, cat: "alkaline", shells: [2, 8, 18, 18, 8, 2], valence: 2 },
             { num: 57, sym: "La", name: "Lanthanum", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 18, 9, 2], valence: 2 },
-            { num: 58, sym: "Ce", name: "Cerium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 19, 9, 2], valence: 2 },
-            { num: 59, sym: "Pr", name: "Praseodymium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 21, 8, 2], valence: 2 },
-            { num: 60, sym: "Nd", name: "Neodymium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 22, 8, 2], valence: 2 },
-            { num: 61, sym: "Pm", name: "Promethium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 23, 8, 2], valence: 2 },
-            { num: 62, sym: "Sm", name: "Samarium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 24, 8, 2], valence: 2 },
-            { num: 63, sym: "Eu", name: "Europium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 25, 8, 2], valence: 2 },
-            { num: 64, sym: "Gd", name: "Gadolinium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 25, 9, 2], valence: 2 },
-            { num: 65, sym: "Tb", name: "Terbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 27, 8, 2], valence: 2 },
-            { num: 66, sym: "Dy", name: "Dysprosium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 28, 8, 2], valence: 2 },
-            { num: 67, sym: "Ho", name: "Holmium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 29, 8, 2], valence: 2 },
-            { num: 68, sym: "Er", name: "Erbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 30, 8, 2], valence: 2 },
-            { num: 69, sym: "Tm", name: "Thulium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 31, 8, 2], valence: 2 },
-            { num: 70, sym: "Yb", name: "Ytterbium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 32, 8, 2], valence: 2 },
-            { num: 71, sym: "Lu", name: "Lutetium", period: 6, group: 3, cat: "lanthanide", shells: [2, 8, 18, 32, 9, 2], valence: 2 },
+            { num: 58, sym: "Ce", name: "Cerium", period: 8, group: 4, cat: "lanthanide", shells: [2, 8, 18, 19, 9, 2], valence: 2 },
+            { num: 59, sym: "Pr", name: "Praseodymium", period: 8, group: 5, cat: "lanthanide", shells: [2, 8, 18, 21, 8, 2], valence: 2 },
+            { num: 60, sym: "Nd", name: "Neodymium", period: 8, group: 6, cat: "lanthanide", shells: [2, 8, 18, 22, 8, 2], valence: 2 },
+            { num: 61, sym: "Pm", name: "Promethium", period: 8, group: 7, cat: "lanthanide", shells: [2, 8, 18, 23, 8, 2], valence: 2 },
+            { num: 62, sym: "Sm", name: "Samarium", period: 8, group: 8, cat: "lanthanide", shells: [2, 8, 18, 24, 8, 2], valence: 2 },
+            { num: 63, sym: "Eu", name: "Europium", period: 8, group: 9, cat: "lanthanide", shells: [2, 8, 18, 25, 8, 2], valence: 2 },
+            { num: 64, sym: "Gd", name: "Gadolinium", period: 8, group: 10, cat: "lanthanide", shells: [2, 8, 18, 25, 9, 2], valence: 2 },
+            { num: 65, sym: "Tb", name: "Terbium", period: 8, group: 11, cat: "lanthanide", shells: [2, 8, 18, 27, 8, 2], valence: 2 },
+            { num: 66, sym: "Dy", name: "Dysprosium", period: 8, group: 12, cat: "lanthanide", shells: [2, 8, 18, 28, 8, 2], valence: 2 },
+            { num: 67, sym: "Ho", name: "Holmium", period: 8, group: 13, cat: "lanthanide", shells: [2, 8, 18, 29, 8, 2], valence: 2 },
+            { num: 68, sym: "Er", name: "Erbium", period: 8, group: 14, cat: "lanthanide", shells: [2, 8, 18, 30, 8, 2], valence: 2 },
+            { num: 69, sym: "Tm", name: "Thulium", period: 8, group: 15, cat: "lanthanide", shells: [2, 8, 18, 31, 8, 2], valence: 2 },
+            { num: 70, sym: "Yb", name: "Ytterbium", period: 8, group: 16, cat: "lanthanide", shells: [2, 8, 18, 32, 8, 2], valence: 2 },
+            { num: 71, sym: "Lu", name: "Lutetium", period: 8, group: 17, cat: "lanthanide", shells: [2, 8, 18, 32, 9, 2], valence: 2 },
             { num: 72, sym: "Hf", name: "Hafnium", period: 6, group: 4, cat: "transition", shells: [2, 8, 18, 32, 10, 2], valence: 2 },
             { num: 73, sym: "Ta", name: "Tantalum", period: 6, group: 5, cat: "transition", shells: [2, 8, 18, 32, 11, 2], valence: 2 },
             { num: 74, sym: "W", name: "Tungsten", period: 6, group: 6, cat: "transition", shells: [2, 8, 18, 32, 12, 2], valence: 2 },
@@ -516,20 +517,20 @@
             { num: 87, sym: "Fr", name: "Francium", period: 7, group: 1, cat: "alkali", shells: [2, 8, 18, 32, 18, 8, 1], valence: 1 },
             { num: 88, sym: "Ra", name: "Radium", period: 7, group: 2, cat: "alkaline", shells: [2, 8, 18, 32, 18, 8, 2], valence: 2 },
             { num: 89, sym: "Ac", name: "Actinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 18, 9, 2], valence: 2 },
-            { num: 90, sym: "Th", name: "Thorium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 18, 10, 2], valence: 2 },
-            { num: 91, sym: "Pa", name: "Protactinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 20, 9, 2], valence: 2 },
-            { num: 92, sym: "U", name: "Uranium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 21, 9, 2], valence: 2 },
-            { num: 93, sym: "Np", name: "Neptunium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 22, 9, 2], valence: 2 },
-            { num: 94, sym: "Pu", name: "Plutonium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 24, 8, 2], valence: 2 },
-            { num: 95, sym: "Am", name: "Americium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 25, 8, 2], valence: 2 },
-            { num: 96, sym: "Cm", name: "Curium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 25, 9, 2], valence: 2 },
-            { num: 97, sym: "Bk", name: "Berkelium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 27, 8, 2], valence: 2 },
-            { num: 98, sym: "Cf", name: "Californium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 28, 8, 2], valence: 2 },
-            { num: 99, sym: "Es", name: "Einsteinium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 29, 8, 2], valence: 2 },
-            { num: 100, sym: "Fm", name: "Fermium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 30, 8, 2], valence: 2 },
-            { num: 101, sym: "Md", name: "Mendelevium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 31, 8, 2], valence: 2 },
-            { num: 102, sym: "No", name: "Nobelium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 32, 8, 2], valence: 2 },
-            { num: 103, sym: "Lr", name: "Lawrencium", period: 7, group: 3, cat: "actinide", shells: [2, 8, 18, 32, 32, 9, 2], valence: 2 },
+            { num: 90, sym: "Th", name: "Thorium", period: 9, group: 4, cat: "actinide", shells: [2, 8, 18, 32, 18, 10, 2], valence: 2 },
+            { num: 91, sym: "Pa", name: "Protactinium", period: 9, group: 5, cat: "actinide", shells: [2, 8, 18, 32, 20, 9, 2], valence: 2 },
+            { num: 92, sym: "U", name: "Uranium", period: 9, group: 6, cat: "actinide", shells: [2, 8, 18, 32, 21, 9, 2], valence: 2 },
+            { num: 93, sym: "Np", name: "Neptunium", period: 9, group: 7, cat: "actinide", shells: [2, 8, 18, 32, 22, 9, 2], valence: 2 },
+            { num: 94, sym: "Pu", name: "Plutonium", period: 9, group: 8, cat: "actinide", shells: [2, 8, 18, 32, 24, 8, 2], valence: 2 },
+            { num: 95, sym: "Am", name: "Americium", period: 9, group: 9, cat: "actinide", shells: [2, 8, 18, 32, 25, 8, 2], valence: 2 },
+            { num: 96, sym: "Cm", name: "Curium", period: 9, group: 10, cat: "actinide", shells: [2, 8, 18, 32, 25, 9, 2], valence: 2 },
+            { num: 97, sym: "Bk", name: "Berkelium", period: 9, group: 11, cat: "actinide", shells: [2, 8, 18, 32, 27, 8, 2], valence: 2 },
+            { num: 98, sym: "Cf", name: "Californium", period: 9, group: 12, cat: "actinide", shells: [2, 8, 18, 32, 28, 8, 2], valence: 2 },
+            { num: 99, sym: "Es", name: "Einsteinium", period: 9, group: 13, cat: "actinide", shells: [2, 8, 18, 32, 29, 8, 2], valence: 2 },
+            { num: 100, sym: "Fm", name: "Fermium", period: 9, group: 14, cat: "actinide", shells: [2, 8, 18, 32, 30, 8, 2], valence: 2 },
+            { num: 101, sym: "Md", name: "Mendelevium", period: 9, group: 15, cat: "actinide", shells: [2, 8, 18, 32, 31, 8, 2], valence: 2 },
+            { num: 102, sym: "No", name: "Nobelium", period: 9, group: 16, cat: "actinide", shells: [2, 8, 18, 32, 32, 8, 2], valence: 2 },
+            { num: 103, sym: "Lr", name: "Lawrencium", period: 9, group: 17, cat: "actinide", shells: [2, 8, 18, 32, 32, 9, 2], valence: 2 },
             { num: 104, sym: "Rf", name: "Rutherfordium", period: 7, group: 4, cat: "transition", shells: [2, 8, 18, 32, 32, 10, 2], valence: 2 },
             { num: 105, sym: "Db", name: "Dubnium", period: 7, group: 5, cat: "transition", shells: [2, 8, 18, 32, 32, 11, 2], valence: 2 },
             { num: 106, sym: "Sg", name: "Seaborgium", period: 7, group: 6, cat: "transition", shells: [2, 8, 18, 32, 32, 12, 2], valence: 2 },
@@ -552,13 +553,14 @@
         let currentItemIndex = 0;
         let score = 0;
         let correctAnswersCount = 0;
-        let gameTimeRemaining = 120; // 2 minutes
+        let gameTimeRemaining = 180; // 3 minutes
         let timerInterval = null;
         let questionPool = [];
         let userResponses = [];
         let isAudioMuted = false;
         let selectedBohrElement = ELEMENTS[10]; // Default Sodium
         let bohrAnimAngle = 0;
+        let activeFamilyFilter = 'all';
 
         /* ================= AUDIO SYNTHESIZER ================= */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -623,31 +625,26 @@
 
         /* ================= QUESTION GENERATOR FOR SPRINT MODE ================= */
         function generateSprintPool() {
-            // 1. Randomly select 50 UNIQUE elements from all 118 elements
             const shuffledElements = shuffleArray(ELEMENTS);
             const selectedElements = shuffledElements.slice(0, 50);
-
             let pool = [];
 
             selectedElements.forEach(elem => {
-                // Correct answer format strictly: "Period X, Group Y"
-                const correctOption = `Period ${elem.period}, Group ${elem.group}`;
-
-                // 2. Generate 3 unique distractor options
+                const correctOption = `Period ${elem.period <= 7 ? elem.period : (elem.period === 8 ? 6 : 7)}, Group ${elem.group}`;
                 let distractors = [];
                 let attempts = 0;
 
                 while (distractors.length < 3 && attempts < 200) {
                     attempts++;
                     const randElem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
-                    const distractorOption = `Period ${randElem.period}, Group ${randElem.group}`;
+                    const pDisplay = randElem.period <= 7 ? randElem.period : (randElem.period === 8 ? 6 : 7);
+                    const distractorOption = `Period ${pDisplay}, Group ${randElem.group}`;
                     
                     if (distractorOption !== correctOption && !distractors.includes(distractorOption)) {
                         distractors.push(distractorOption);
                     }
                 }
 
-                // Fallback generator if needed
                 while (distractors.length < 3) {
                     const fakeP = (elem.period % 7) + 1;
                     const fakeG = (elem.group % 18) + 1;
@@ -657,12 +654,12 @@
                     }
                 }
 
-                // Question object
+                const displayP = elem.period <= 7 ? elem.period : (elem.period === 8 ? 6 : 7);
                 pool.push({
-                    prompt: elem.name, // Display ONLY the element name
+                    prompt: elem.name,
                     correctAns: correctOption,
                     options: shuffleArray([correctOption, ...distractors]),
-                    exp: `${elem.name} (${elem.sym}) is in Period ${elem.period} (${elem.shells.length} electron shell(s)) and Group ${elem.group}.`
+                    exp: `${elem.name} (${elem.sym}) is in Period ${displayP} and Group ${elem.group}.`
                 });
             });
 
@@ -725,7 +722,7 @@
             currentItemIndex = 0;
             score = 0;
             correctAnswersCount = 0;
-            gameTimeRemaining = 120; // 2 minutes
+            gameTimeRemaining = 180; // 3 minutes
             userResponses = [];
 
             if (mode === 'sprint') {
@@ -781,9 +778,6 @@
             if (currentGame === 'sprint') {
                 document.getElementById('game-title').innerText = "GROUP & PERIOD SPRINT";
                 
-                // Group & Period Sprint Layout:
-                // Prompts displaying ONLY the element name
-                // Options displaying ONLY "Period X, Group Y" in ONE single horizontal line
                 arena.innerHTML = `
                     <div class="w-full flex flex-col items-center gap-8">
                         <div class="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center shadow-2xl w-full max-w-xl">
@@ -838,7 +832,6 @@
 
             document.getElementById('game-score').innerText = score;
 
-            // Log item attempt
             userResponses.push({
                 itemNum: currentItemIndex + 1,
                 prompt: currentQuestion.prompt,
@@ -848,7 +841,6 @@
                 exp: currentQuestion.exp
             });
 
-            // Instant auto-advance
             currentItemIndex++;
             loadNextQuestion();
         }
@@ -884,17 +876,15 @@
 
             const finishedItems = userResponses.length;
             const accuracyPct = finishedItems > 0 ? Math.round((correctAnswersCount / finishedItems) * 100) : 0;
-            const timeElapsedSecs = 120 - Math.max(0, gameTimeRemaining);
+            const timeElapsedSecs = 180 - Math.max(0, gameTimeRemaining);
             const minsUsed = Math.floor(timeElapsedSecs / 60);
             const secsUsed = timeElapsedSecs % 60;
 
-            // Render stats card metrics
             document.getElementById('res-correctness').innerText = `${correctAnswersCount} / 50`;
             document.getElementById('res-accuracy').innerText = `${accuracyPct}%`;
             document.getElementById('res-time-used').innerText = `${minsUsed}m ${secsUsed.toString().padStart(2, '0')}s`;
             document.getElementById('res-finished').innerText = `${finishedItems} / 50`;
 
-            // Populate Breakdown Review Table
             const tbody = document.getElementById('review-table-body');
             tbody.innerHTML = userResponses.map(r => `
                 <tr class="hover:bg-slate-800/30">
@@ -914,36 +904,43 @@
         }
 
         /* ================= PERIODIC TABLE & BOHR VISUALIZER ================= */
+        function filterFamily(cat) {
+            activeFamilyFilter = cat;
+            renderPeriodicGrid();
+        }
+
         function renderPeriodicGrid() {
             const grid = document.getElementById('periodic-grid');
             grid.innerHTML = '';
 
-            // Standard layout grid mapping for 118 elements
-            for (let r = 1; r <= 7; r++) {
+            // Standard layout grid mapping for 118 elements (Rows 1-9 including Lanthanides & Actinides)
+            for (let r = 1; r <= 9; r++) {
+                // Add visual row spacer before Lanthanides/Actinides if r === 8
                 for (let c = 1; c <= 18; c++) {
-                    const elem = ELEMENTS.find(e => e.period === r && e.group === c && e.num <= 56 || e.num >= 72 && e.num <= 88 || e.num >= 104);
-                    
+                    let elem = null;
+
+                    if (r <= 7) {
+                        elem = ELEMENTS.find(e => e.period === r && e.group === c);
+                    } else if (r === 8) {
+                        // Lanthanides (La 57 to Lu 71 mapped to columns 3 to 17)
+                        elem = ELEMENTS.find(e => e.cat === 'lanthanide' && e.group === c);
+                    } else if (r === 9) {
+                        // Actinides (Ac 89 to Lr 103 mapped to columns 3 to 17)
+                        elem = ELEMENTS.find(e => e.cat === 'actinide' && e.group === c);
+                    }
+
                     if (elem) {
                         const cell = document.createElement('div');
                         const catColor = getCatBgClass(elem.cat);
-                        cell.className = `p-1 rounded ${catColor} border border-slate-800 cursor-pointer hover:scale-110 hover:z-20 transition-all flex flex-col items-center justify-center text-center`;
+                        const isFiltered = (activeFamilyFilter === 'all' || elem.cat === activeFamilyFilter);
+                        const opacityClass = isFiltered ? 'opacity-100 scale-100 ring-2 ring-cyan-400/50' : 'opacity-25 scale-95';
+
+                        cell.className = `p-1 rounded ${catColor} border border-slate-800 cursor-pointer hover:scale-110 hover:z-20 transition-all flex flex-col items-center justify-center text-center ${opacityClass}`;
                         cell.onclick = () => selectBohrElement(elem);
                         cell.innerHTML = `
                             <span class="text-[7px] text-slate-400 block font-semibold">${elem.num}</span>
                             <span class="font-orbitron font-black text-[10px] text-slate-100">${elem.sym}</span>
                         `;
-                        grid.appendChild(cell);
-                    } else if (r === 6 && c === 3) {
-                        // Lanthanides marker
-                        const cell = document.createElement('div');
-                        cell.className = "p-1 rounded bg-lanthanide/20 border border-lanthanide/50 text-lanthanide font-bold text-[8px] flex items-center justify-center text-center";
-                        cell.innerText = "57-71";
-                        grid.appendChild(cell);
-                    } else if (r === 7 && c === 3) {
-                        // Actinides marker
-                        const cell = document.createElement('div');
-                        cell.className = "p-1 rounded bg-actinide/20 border border-actinide/50 text-actinide font-bold text-[8px] flex items-center justify-center text-center";
-                        cell.innerText = "89-103";
                         grid.appendChild(cell);
                     } else {
                         const emptyCell = document.createElement('div');
@@ -971,11 +968,12 @@
 
         function selectBohrElement(elem) {
             selectedBohrElement = elem;
+            const displayPeriod = elem.period <= 7 ? elem.period : (elem.period === 8 ? 6 : 7);
             document.getElementById('bohr-symbol').innerText = elem.sym;
             document.getElementById('bohr-name').innerText = elem.name;
             document.getElementById('bohr-category').innerText = elem.cat;
             document.getElementById('bohr-num').innerText = elem.num;
-            document.getElementById('bohr-period').innerText = `${elem.period} (${elem.shells.length} Shells)`;
+            document.getElementById('bohr-period').innerText = `${displayPeriod} (${elem.shells.length} Shells)`;
             document.getElementById('bohr-group').innerText = elem.group;
             document.getElementById('bohr-valence').innerText = elem.valence;
         }
@@ -992,7 +990,7 @@
 
                 // Draw Nucleus
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, 16, 0, Math.PI * 2);
+                ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
                 ctx.fillStyle = '#06b6d4';
                 ctx.fill();
                 ctx.strokeStyle = '#22d3ee';
@@ -1000,34 +998,31 @@
                 ctx.stroke();
 
                 ctx.fillStyle = '#0f172a';
-                ctx.font = 'bold 10px Orbitron';
+                ctx.font = 'bold 9px Orbitron';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(selectedBohrElement.sym, centerX, centerY);
 
                 // Draw Shell Orbit Circles and Electrons
                 const shells = selectedBohrElement.shells;
-                const baseRadius = 24;
+                const baseRadius = 22;
 
                 shells.forEach((electronCount, shellIdx) => {
-                    const radius = baseRadius + (shellIdx * 15);
+                    const radius = baseRadius + (shellIdx * 13);
 
-                    // Orbit line
                     ctx.beginPath();
                     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
                     ctx.strokeStyle = 'rgba(51, 65, 85, 0.5)';
                     ctx.lineWidth = 1;
                     ctx.stroke();
 
-                    // Electrons
                     for (let e = 0; e < electronCount; e++) {
                         const angle = bohrAnimAngle * (shellIdx + 1) * 0.4 + (e * (Math.PI * 2 / electronCount));
                         const ex = centerX + Math.cos(angle) * radius;
                         const ey = centerY + Math.sin(angle) * radius;
 
                         ctx.beginPath();
-                        ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
-                        // Highlight valence shell electrons in cyan
+                        ctx.arc(ex, ey, 3, 0, Math.PI * 2);
                         ctx.fillStyle = (shellIdx === shells.length - 1) ? '#22d3ee' : '#cbd5e1';
                         ctx.fill();
                         ctx.strokeStyle = '#0f172a';
