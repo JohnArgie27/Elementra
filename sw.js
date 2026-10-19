@@ -1,6 +1,6 @@
-const CACHE_NAME = 'elementra-v3';
+const CACHE_NAME = 'elementra-v4';
 
-// Core local files that MUST be cached
+// Core local files that MUST be cached for offline play
 const LOCAL_ASSETS = [
   './',
   './index.html',
@@ -8,26 +8,11 @@ const LOCAL_ASSETS = [
   './manifest.json'
 ];
 
-// External assets (cached dynamically when loaded)
-const EXTERNAL_ASSETS = [
-  'https://cdn.tailwindcss.com',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
-];
-
-// Install Event
+// Install Event: Cache local files only (avoids CDN CORS blocking)
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      // 1. Cache local files strictly
-      await cache.addAll(LOCAL_ASSETS);
-      // 2. Safely attempt to cache external CDNs individually
-      for (const url of EXTERNAL_ASSETS) {
-        try {
-          await cache.add(url);
-        } catch (e) {
-          console.warn('Could not pre-cache CDN asset:', url);
-        }
-      }
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(LOCAL_ASSETS);
     })
   );
   self.skipWaiting();
@@ -45,7 +30,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event: Cache-First strategy with Network Fallback
+// Fetch Event: Serve cached local files offline, fallback safely
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
@@ -53,18 +38,11 @@ self.addEventListener('fetch', (event) => {
         return cachedResponse;
       }
       return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
         return networkResponse;
+      }).catch(() => {
+        // Fallback to main index.html if offline and asset isn't cached
+        return caches.match('./index.html');
       });
-    }).catch(() => {
-      // Fallback to cached main HTML if offline request fails
-      return caches.match('./index.html') || caches.match('./');
     })
   );
 });
